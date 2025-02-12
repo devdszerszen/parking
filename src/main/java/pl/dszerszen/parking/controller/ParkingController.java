@@ -1,5 +1,7 @@
 package pl.dszerszen.parking.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,18 +25,18 @@ public class ParkingController {
     }
 
     @PostMapping("/add")
-    public String addReservation(@RequestBody ParkingReservationDto reservation) {
+    public String addReservation(@Valid @RequestBody ParkingReservationDto reservation) {
         service.addReservation(reservation);
         return reservation.getId();
     }
 
     @GetMapping("/reservations")
-    public List<ParkingReservationDto> getReservations(@RequestParam String registrationNumber) {
+    public List<ParkingReservationDto> getReservations(@RequestParam @NotNull String registrationNumber) {
         return service.getReservationsForCar(StringUtils.removeSpaces(registrationNumber));
     }
 
     @GetMapping("/reservations/details")
-    public ParkingReservationDto getReservationDetails(@RequestParam String id) {
+    public ParkingReservationDto getReservationDetails(@RequestParam @NotNull String id) {
         try {
             return service.getReservationById(id);
         } catch (NoSuchElementException e) {
