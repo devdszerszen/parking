@@ -2,8 +2,10 @@ package pl.dszerszen.parking.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.beans.ConstructorProperties;
 import java.time.LocalDate;
@@ -14,8 +16,8 @@ public class ParkingReservationDto {
     @JsonIgnore
     private final String id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @NotBlank(message = "date cannot be empty")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @FutureOrPresent(message = "Invalid date")
     private final LocalDate date;
 
     @NotBlank(message = "registrationNumber cannot be empty")

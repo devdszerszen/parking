@@ -8,7 +8,6 @@ import pl.dszerszen.parking.service.exceptions.NoParkingSpaceException;
 import pl.dszerszen.parking.service.exceptions.ReservationFailedException;
 
 import java.sql.Date;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -27,10 +26,6 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public String addReservation(ParkingReservationDto reservation) {
-        if (reservation.getDate().isBefore(LocalDate.now())) {
-            throw new DateTimeException("Date cannot be past");
-        }
-
         List<Integer> availableSpaces = getAvailableSpaces(reservation.getDate());
 
         if (availableSpaces.isEmpty()) {
@@ -44,8 +39,8 @@ public class ParkingServiceImpl implements ParkingService {
         } else {
             reservation.setParkingSpaceNumber(availableSpaces.getFirst());
         }
-        int rowsAded = parkingRepository.add(mapper.mapToEntity(reservation));
-        if (rowsAded != 1) {
+        int rowsAdded = parkingRepository.add(mapper.mapToEntity(reservation));
+        if (rowsAdded != 1) {
             throw new ReservationFailedException("Unable to add reservation");
         }
         return reservation.getId();
