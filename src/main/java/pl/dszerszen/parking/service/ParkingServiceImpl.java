@@ -2,6 +2,7 @@ package pl.dszerszen.parking.service;
 
 import org.springframework.stereotype.Service;
 import pl.dszerszen.parking.model.ParkingReservationDto;
+import pl.dszerszen.parking.service.dto.ParkingReservationDto;
 import pl.dszerszen.parking.service.exceptions.NoParkingSpaceException;
 
 import java.time.DateTimeException;

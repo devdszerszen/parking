@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import pl.dszerszen.parking.model.ParkingReservationDto;
 import pl.dszerszen.parking.service.ParkingService;
+import pl.dszerszen.parking.service.dto.ParkingReservationDto;
 import pl.dszerszen.parking.utils.StringUtils;
 
 import java.util.List;
@@ -26,8 +26,7 @@ public class ParkingController {
 
     @PostMapping("/add")
     public String addReservation(@Valid @RequestBody ParkingReservationDto reservation) {
-        service.addReservation(reservation);
-        return reservation.getId();
+        return service.addReservation(reservation);
     }
 
     @GetMapping("/reservations")
