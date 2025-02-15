@@ -15,6 +15,7 @@ public class ParkingReservationDto {
     private final String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotBlank(message = "date cannot be empty")
     private final LocalDate date;
 
     @NotBlank(message = "registrationNumber cannot be empty")

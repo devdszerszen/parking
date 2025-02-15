@@ -9,6 +9,7 @@ import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.dszerszen.parking.service.exceptions.NoParkingSpaceException;
+import pl.dszerszen.parking.service.exceptions.ReservationFailedException;
 
 import java.time.DateTimeException;
 import java.util.HashMap;
@@ -39,6 +40,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoParkingSpaceException.class)
     public ResponseEntity<?> handleNoParkingSpaceException(NoParkingSpaceException ex) {
         return new ResponseEntity<>(getErrorsMap(List.of(ex.getMessage())), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ReservationFailedException.class)
+    public ResponseEntity<?> handleReservationFailedException(ReservationFailedException ex) {
+        return new ResponseEntity<>(getErrorsMap(List.of(ex.getMessage())), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
