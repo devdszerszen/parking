@@ -19,6 +19,8 @@ public class ParkingServiceImpl implements ParkingService {
 
     private final ReservationMapper mapper = new ReservationMapper();
 
+    private static final boolean allowDuplicatedReservations = false;
+
     @Autowired
     public ParkingServiceImpl(ParkingRepository parkingRepository) {
         this.parkingRepository = parkingRepository;
@@ -26,6 +28,13 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public String addReservation(ParkingReservationDto reservation) {
+        if (!allowDuplicatedReservations) {
+            Date date = Date.valueOf(reservation.getDate());
+            if (parkingRepository.hasActiveReservation(reservation.getRegistrationNumber(), date)) {
+                throw new ReservationFailedException("Unable to add multiple reservations for same registration number");
+            }
+        }
+
         List<Integer> availableSpaces = getAvailableSpaces(reservation.getDate());
 
         if (availableSpaces.isEmpty()) {

@@ -32,11 +32,12 @@ public class ParkingRepository {
     }
 
     public int add(ReservationEntity reservation) {
-        return jdbcTemplate.update("insert into reservations ("
-                        + ID + ", "
-                        + DATE + ", "
-                        + REGISTRATION_NUMBER + ", "
-                        + SPOT + ") values( ?, ?, ?, ?)",
+        String sql = "insert into reservations ("
+                + ID + ", "
+                + DATE + ", "
+                + REGISTRATION_NUMBER + ", "
+                + SPOT + ") values( ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql,
                 reservation.id(),
                 reservation.date(),
                 reservation.registrationNumber(),
@@ -44,23 +45,22 @@ public class ParkingRepository {
     }
 
     public Optional<ReservationEntity> findReservationById(String id) {
-        return jdbcTemplate.query("select * from reservations where " + ID + "=?",
-                new ReservationEntityMapper(),
-                id
-        ).stream().findFirst();
+        String sql = "select * from reservations where " + ID + "=?";
+        return jdbcTemplate.query(sql, new ReservationEntityMapper(), id).stream().findFirst();
+    }
+
+    public boolean hasActiveReservation(String registrationNumber, Date date) {
+        String sql = "select * from reservations where " + REGISTRATION_NUMBER + "=? AND " + DATE + "=?";
+        return jdbcTemplate.query(sql, new ReservationEntityMapper(), registrationNumber, date).size() == 1;
     }
 
     public List<ReservationEntity> findReservationsByRegistrationNumber(String registrationNumber) {
-        return jdbcTemplate.query("select * from reservations where " + REGISTRATION_NUMBER + "=?",
-                new ReservationEntityMapper(),
-                registrationNumber
-        );
+        String sql = "select * from reservations where " + REGISTRATION_NUMBER + "=?";
+        return jdbcTemplate.query(sql, new ReservationEntityMapper(), registrationNumber);
     }
 
     public List<Integer> findAvailableSpotsForDate(Date date) {
-        return jdbcTemplate.query("select * from spots except select " + SPOT + " from reservations where " + DATE + "=?",
-                (rs, rowNum) -> rs.getInt(ID),
-                date
-        );
+        String sql = "select * from spots except select " + SPOT + " from reservations where " + DATE + "=?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt(ID), date);
     }
 }
